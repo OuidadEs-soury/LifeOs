@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<h1>Your Tasks</h1>
+
+<form action="/add_task" method="POST">
+
+<input name="title" placeholder="New task">
+
+<button>Add</button>
+
+</form>
+
+<ul>
+
+{% for task in tasks %}
+
+<li>
+
+{% if task.completed %}
+<s>{{ task.title }}</s>
+{% else %}
+{{ task.title }}
+<a href="/complete/{{ task.id }}">Done</a>
+{% endif %}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+</body>
+</html>
