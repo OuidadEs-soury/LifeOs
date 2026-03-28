@@ -32,3 +32,24 @@ def add_task():
     db.commit()
 
     return redirect("/dashboard")
+from flask import request, jsonify
+
+
+@tasks.route("/update_task", methods=["POST"])
+def update_task():
+
+    data = request.get_json()
+
+    task_id = data["task_id"]
+    status = data["status"]
+
+    db = get_db()
+
+    db.execute(
+        "UPDATE tasks SET status=? WHERE id=?",
+        (status, task_id)
+    )
+
+    db.commit()
+
+    return jsonify({"success": True})

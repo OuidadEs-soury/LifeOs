@@ -1,39 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Dashboard</title>
-<link rel="stylesheet" href="/static/css/style.css"></head>
+<title>LifeOS Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
 
 <body>
 
-<h1>Your Tasks</h1>
+<div class="app">
 
-<form action="/add_task" method="POST">
+    <div class="sidebar">
+        <h2>LifeOS</h2>
 
-<input name="title" placeholder="New task">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/tasks">Tasks</a>
+        <a href="/notes">Notes</a>
+        <a href="/analytics">Analytics</a>
+    </div>
 
-<button>Add</button>
+    <div class="main">
 
-</form>
+        <h1>Dashboard</h1>
 
-<ul>
+        <div class="cards">
 
-{% for task in tasks %}
+            <div class="card">
+                <h3>Total Tasks</h3>
+                <p>{{ tasks|length }}</p>
+            </div>
 
-<li>
+            <div class="card">
+                <h3>Completed</h3>
+                <p>
+                {% set done = tasks | selectattr("status", "equalto", "done") | list | length %}
+                {{ done }}
+                </p>
+            </div>
 
-{% if task.completed %}
-<s>{{ task.title }}</s>
-{% else %}
-{{ task.title }}
-<a href="/complete/{{ task.id }}">Done</a>
-{% endif %}
+            <div class="card">
+                <h3>Pending</h3>
+                <p>{{ tasks|length - done }}</p>
+            </div>
 
-</li>
+        </div>
 
-{% endfor %}
+        <div class="task-section">
 
-</ul>
+            <h2>Your Tasks</h2>
+
+            <form action="/add_task" method="POST">
+                <input name="title" placeholder="New task">
+                <button>Add Task</button>
+            </form>
+
+            <ul>
+
+            {% for task in tasks %}
+
+                <li>
+
+                {% if task.status == "done" %}
+                <span class="done">{{ task.title }}</span>
+                {% else %}
+                {{ task.title }}
+                {% endif %}
+
+                </li>
+
+            {% endfor %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

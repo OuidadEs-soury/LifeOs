@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>LifeOS Tasks</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="sidebar">
+
+<h2>LifeOS</h2>
+
+<a href="/dashboard">Dashboard</a>
+<a href="/tasks">Tasks</a>
+<a href="/notes">Notes</a>
+
+</div>
+
+<div class="main">
+
+<h1>Task Board</h1>
+
+<form action="/add_task" method="POST">
+
+<input name="title" placeholder="New task">
+<button>Add</button>
+
+</form>
+
+<div class="kanban">
+
+<div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="todo">
+
+<h3>Todo</h3>
+
+{% for task in tasks if task.status == "todo" %}
+
+<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{ task.id }}">
+
+{{ task.title }}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="doing">
+
+<h3>Doing</h3>
+
+{% for task in tasks if task.status == "doing" %}
+
+<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{ task.id }}">
+
+{{ task.title }}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="done">
+
+<h3>Done</h3>
+
+{% for task in tasks if task.status == "done" %}
+
+<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{ task.id }}">
+
+{{ task.title }}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>
