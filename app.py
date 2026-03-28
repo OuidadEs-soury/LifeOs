@@ -1,74 +1,18 @@
-from flask import Flask, render_template, request, redirect, session
-from database import get_db, init_db
+from flask import Flask
+from database.db import init_db
 
 app = Flask(__name__)
-app.secret_key = "secret"
+app.secret_key = "lifeos_secret"
 
 init_db()
 
+from routes.auth_routes import auth
+from routes.task_routes import tasks
+from routes.notes_routes import notes
 
-@app.route("/")
-def home():
-    return redirect("/login")
+app.register_blueprint(auth)
+app.register_blueprint(tasks)
+app.register_blueprint(notes)
 
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-
-    if request.method == "POST":
-
-        username = request.form["username"]
-        password = request.form["password"]
-
-        db = get_db()
-
-        user = db.execute(
-            "SELECT * FROM users WHERE username=? AND password=?",
-            (username, password)
-        ).fetchone()
-
-        if user:
-            session["user"] = username
-            return redirect("/dashboard")
-
-    return render_template("login.html")
-
-
-@app.route("/dashboard")
-def dashboard():
-
-    if "user" not in session:
-        return redirect("/login")
-
-    db = get_db()
-
-    tasks = db.execute("SELECT * FROM tasks").fetchall()
-
-    return render_template("dashboard.html", tasks=tasks)
-
-
-@app.route("/add_task", methods=["POST"])
-def add_task():
-
-    title = request.form["title"]
-
-    db = get_db()
-
-    db.execute("INSERT INTO tasks (title) VALUES (?)", (title,))
-    db.commit()
-
-    return redirect("/dashboard")
-
-
-@app.route("/complete/<int:id>")
-def complete(id):
-
-    db = get_db()
-
-    db.execute("UPDATE tasks SET completed=1 WHERE id=?", (id,))
-    db.commit()
-
-    return redirect("/dashboard")
-
-
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
