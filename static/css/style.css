@@ -63,10 +63,20 @@ font-size:30px;
 margin-top:10px;
 }
 
-.task-section{
+.task-preview{
 background:#1e293b;
 padding:20px;
 border-radius:10px;
+}
+
+ul{
+list-style:none;
+padding:0;
+}
+
+li{
+padding:10px;
+border-bottom:1px solid #334155;
 }
 
 input{
@@ -84,20 +94,6 @@ border-radius:6px;
 cursor:pointer;
 }
 
-ul{
-list-style:none;
-padding:0;
-}
-
-li{
-padding:10px;
-border-bottom:1px solid #334155;
-}
-
-.done{
-text-decoration:line-through;
-color:#94a3b8;
-}
 .kanban{
 display:flex;
 gap:20px;
@@ -110,10 +106,6 @@ padding:20px;
 border-radius:10px;
 flex:1;
 min-height:300px;
-}
-
-.column h3{
-margin-top:0;
 }
 
 .task{

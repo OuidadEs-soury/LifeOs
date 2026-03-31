@@ -1,81 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>LifeOS Dashboard</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<link rel="stylesheet" href="/static/css/style.css">
+
 </head>
 
 <body>
 
 <div class="app">
 
-    <div class="sidebar">
-        <h2>LifeOS</h2>
+<div class="sidebar">
 
-        <a href="/dashboard">Dashboard</a>
-        <a href="/tasks">Tasks</a>
-        <a href="/notes">Notes</a>
-        <a href="/analytics">Analytics</a>
-    </div>
+<h2>LifeOS</h2>
 
-    <div class="main">
+<a href="/dashboard">Dashboard</a>
+<a href="/tasks">Tasks</a>
 
-        <h1>Dashboard</h1>
+</div>
 
-        <div class="cards">
 
-            <div class="card">
-                <h3>Total Tasks</h3>
-                <p>{{ tasks|length }}</p>
-            </div>
+<div class="main">
 
-            <div class="card">
-                <h3>Completed</h3>
-                <p>
-                {% set done = tasks | selectattr("status", "equalto", "done") | list | length %}
-                {{ done }}
-                </p>
-            </div>
+<h1>Dashboard</h1>
 
-            <div class="card">
-                <h3>Pending</h3>
-                <p>{{ tasks|length - done }}</p>
-            </div>
+<div class="cards">
 
-        </div>
+<div class="card">
 
-        <div class="task-section">
+<h3>Total Tasks</h3>
 
-            <h2>Your Tasks</h2>
+<p>{{ tasks|length }}</p>
 
-            <form action="/add_task" method="POST">
-                <input name="title" placeholder="New task">
-                <button>Add Task</button>
-            </form>
+</div>
 
-            <ul>
+<div class="card">
 
-            {% for task in tasks %}
+<h3>Completed</h3>
 
-                <li>
+<p>
 
-                {% if task.status == "done" %}
-                <span class="done">{{ task.title }}</span>
-                {% else %}
-                {{ task.title }}
-                {% endif %}
+{% set done = tasks | selectattr("status", "equalto", "done") | list | length %}
 
-                </li>
+{{ done }}
 
-            {% endfor %}
+</p>
 
-            </ul>
+</div>
 
-        </div>
+<div class="card">
 
-    </div>
+<h3>Pending</h3>
+
+<p>{{ tasks|length - done }}</p>
+
+</div>
+
+</div>
+
+
+<div class="task-preview">
+
+<h2>Recent Tasks</h2>
+
+<ul>
+
+{% for task in tasks %}
+
+<li>
+
+{{ task.title }} — {{ task.status }}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+</div>
 
 </div>
 
 </body>
+
 </html>
