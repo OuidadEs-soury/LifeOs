@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Notes</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="sidebar">
+
+<h2>LifeOS</h2>
+
+<a href="/dashboard">Dashboard</a>
+<a href="/tasks">Tasks</a>
+<a href="/notes">Notes</a>
+<a href="/logout">Logout</a>
+
+</div>
+
+
+<div class="main">
+
+<h1>Notes</h1>
+
+<form method="POST" action="/add_note">
+
+<textarea name="content" placeholder="Write a note"></textarea>
+
+<button>Add Note</button>
+
+</form>
+
+<div class="notes">
+
+{% for note in notes %}
+
+<div class="note">
+
+{{note.content}}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

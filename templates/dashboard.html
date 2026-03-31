@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
-<title>LifeOS Dashboard</title>
+<title>Dashboard</title>
 
 <link rel="stylesheet" href="/static/css/style.css">
 
@@ -18,6 +19,8 @@
 
 <a href="/dashboard">Dashboard</a>
 <a href="/tasks">Tasks</a>
+<a href="/notes">Notes</a>
+<a href="/logout">Logout</a>
 
 </div>
 
@@ -38,46 +41,11 @@
 
 <div class="card">
 
-<h3>Completed</h3>
+<h3>Notes</h3>
 
-<p>
-
-{% set done = tasks | selectattr("status", "equalto", "done") | list | length %}
-
-{{ done }}
-
-</p>
+<p>{{ notes|length }}</p>
 
 </div>
-
-<div class="card">
-
-<h3>Pending</h3>
-
-<p>{{ tasks|length - done }}</p>
-
-</div>
-
-</div>
-
-
-<div class="task-preview">
-
-<h2>Recent Tasks</h2>
-
-<ul>
-
-{% for task in tasks %}
-
-<li>
-
-{{ task.title }} — {{ task.status }}
-
-</li>
-
-{% endfor %}
-
-</ul>
 
 </div>
 

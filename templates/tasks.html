@@ -3,7 +3,7 @@
 
 <head>
 
-<title>LifeOS Tasks</title>
+<title>Tasks</title>
 
 <link rel="stylesheet" href="/static/css/style.css">
 
@@ -19,6 +19,8 @@
 
 <a href="/dashboard">Dashboard</a>
 <a href="/tasks">Tasks</a>
+<a href="/notes">Notes</a>
+<a href="/logout">Logout</a>
 
 </div>
 
@@ -27,7 +29,7 @@
 
 <h1>Task Board</h1>
 
-<form action="/add_task" method="POST">
+<form method="POST" action="/add_task">
 
 <input name="title" placeholder="New task">
 
@@ -39,51 +41,36 @@
 <div class="kanban">
 
 <div class="column" data-status="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
-
 <h3>Todo</h3>
 
 {% for task in tasks if task.status == "todo" %}
-
-<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{ task.id }}">
-
-{{ task.title }}
-
+<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{task.id}}">
+{{task.title}}
 </div>
-
 {% endfor %}
 
 </div>
 
 
 <div class="column" data-status="doing" ondrop="drop(event)" ondragover="allowDrop(event)">
-
 <h3>Doing</h3>
 
 {% for task in tasks if task.status == "doing" %}
-
-<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{ task.id }}">
-
-{{ task.title }}
-
+<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{task.id}}">
+{{task.title}}
 </div>
-
 {% endfor %}
 
 </div>
 
 
 <div class="column" data-status="done" ondrop="drop(event)" ondragover="allowDrop(event)">
-
 <h3>Done</h3>
 
 {% for task in tasks if task.status == "done" %}
-
-<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{ task.id }}">
-
-{{ task.title }}
-
+<div class="task" draggable="true" ondragstart="drag(event)" id="task-{{task.id}}">
+{{task.title}}
 </div>
-
 {% endfor %}
 
 </div>
