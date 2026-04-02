@@ -3,7 +3,7 @@
 
 <head>
 
-<title>AI Assistant</title>
+<title>LifeOS AI</title>
 
 <link rel="stylesheet" href="/static/css/style.css">
 
@@ -11,60 +11,25 @@
 
 <body>
 
-<div class="app">
-
-<div class="sidebar">
-
-<h2>LifeOS</h2>
-
-<a href="/dashboard">Dashboard</a>
-<a href="/tasks">Tasks</a>
-<a href="/notes">Notes</a>
-<a href="/ai">AI</a>
-<a href="/logout">Logout</a>
-
-</div>
-
-
 <div class="main">
 
-<h1>AI Productivity Assistant</h1>
+<h1>LifeOS AI Assistant</h1>
 
-<input id="question" placeholder="Ask something...">
+<form method="post">
 
-<button onclick="ask()">Ask</button>
+<input name="prompt" placeholder="Ask anything..." required>
 
-<div id="answer"></div>
+<button type="submit">Ask AI</button>
+
+</form>
+
+<div class="ai-response">
+
+<p>{{ answer }}</p>
 
 </div>
 
 </div>
-
-<script>
-
-function ask(){
-
-const q=document.getElementById("question").value
-
-fetch("/ask_ai",{
-
-method:"POST",
-
-headers:{"Content-Type":"application/json"},
-
-body:JSON.stringify({question:q})
-
-})
-.then(r=>r.json())
-.then(d=>{
-
-document.getElementById("answer").innerHTML=d.answer
-
-})
-
-}
-
-</script>
 
 </body>
 
