@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Calendar</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="sidebar">
+
+<h2>LifeOS</h2>
+
+<a href="/dashboard">Dashboard</a>
+<a href="/tasks">Tasks</a>
+<a href="/calendar">Calendar</a>
+<a href="/logout">Logout</a>
+
+</div>
+
+<div class="main">
+
+<h1>Task Calendar</h1>
+
+<table>
+
+<tr>
+<th>Date</th>
+<th>Task</th>
+<th>Status</th>
+</tr>
+
+{% for task in tasks %}
+
+<tr>
+
+<td>{{task.date}}</td>
+
+<td>{{task.title}}</td>
+
+<td>{{task.status}}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
