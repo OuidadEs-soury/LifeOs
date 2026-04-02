@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 import sqlite3
+import random
 
 app = Flask(__name__)
 app.secret_key = "lifeos_secret"
 
 
-def get_db():
+def db():
     conn = sqlite3.connect("database.db")
     conn.row_factory = sqlite3.Row
     return conn
@@ -13,9 +14,9 @@ def get_db():
 
 def init_db():
 
-    db = get_db()
+    d = db()
 
-    db.execute("""
+    d.execute("""
     CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT,
@@ -23,7 +24,7 @@ def init_db():
     )
     """)
 
-    db.execute("""
+    d.execute("""
     CREATE TABLE IF NOT EXISTS tasks(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
@@ -31,22 +32,22 @@ def init_db():
     )
     """)
 
-    db.execute("""
+    d.execute("""
     CREATE TABLE IF NOT EXISTS notes(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         content TEXT
     )
     """)
 
-    user = db.execute("SELECT * FROM users WHERE username='admin'").fetchone()
+    user = d.execute("SELECT * FROM users WHERE username='admin'").fetchone()
 
     if not user:
-        db.execute(
+        d.execute(
             "INSERT INTO users (username,password) VALUES (?,?)",
             ("admin","lifeos123")
         )
 
-    db.commit()
+    d.commit()
 
 
 @app.route("/")
@@ -66,9 +67,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        db = get_db()
-
-        user = db.execute(
+        user = db().execute(
             "SELECT * FROM users WHERE username=? AND password=?",
             (username,password)
         ).fetchone()
@@ -91,26 +90,26 @@ def logout():
 @app.route("/dashboard")
 def dashboard():
 
-    if "user" not in session:
-        return redirect("/login")
+    tasks = db().execute("SELECT * FROM tasks").fetchall()
 
-    db = get_db()
+    notes = db().execute("SELECT * FROM notes").fetchall()
 
-    tasks = db.execute("SELECT * FROM tasks").fetchall()
+    productivity = random.randint(60,100)
 
-    notes = db.execute("SELECT * FROM notes").fetchall()
-
-    return render_template("dashboard.html", tasks=tasks, notes=notes)
+    return render_template(
+        "dashboard.html",
+        tasks=tasks,
+        notes=notes,
+        productivity=productivity
+    )
 
 
 @app.route("/tasks")
 def tasks():
 
-    db = get_db()
+    tasks = db().execute("SELECT * FROM tasks").fetchall()
 
-    tasks = db.execute("SELECT * FROM tasks").fetchall()
-
-    return render_template("tasks.html", tasks=tasks)
+    return render_template("tasks.html",tasks=tasks)
 
 
 @app.route("/add_task", methods=["POST"])
@@ -118,14 +117,14 @@ def add_task():
 
     title = request.form["title"]
 
-    db = get_db()
+    d = db()
 
-    db.execute(
+    d.execute(
         "INSERT INTO tasks (title,status) VALUES (?,?)",
         (title,"todo")
     )
 
-    db.commit()
+    d.commit()
 
     return redirect("/tasks")
 
@@ -135,14 +134,14 @@ def update_task():
 
     data = request.get_json()
 
-    db = get_db()
+    d = db()
 
-    db.execute(
+    d.execute(
         "UPDATE tasks SET status=? WHERE id=?",
         (data["status"],data["task_id"])
     )
 
-    db.commit()
+    d.commit()
 
     return jsonify({"success":True})
 
@@ -150,9 +149,7 @@ def update_task():
 @app.route("/notes")
 def notes():
 
-    db = get_db()
-
-    notes = db.execute("SELECT * FROM notes").fetchall()
+    notes = db().execute("SELECT * FROM notes").fetchall()
 
     return render_template("notes.html",notes=notes)
 
@@ -162,16 +159,42 @@ def add_note():
 
     content = request.form["content"]
 
-    db = get_db()
+    d = db()
 
-    db.execute(
+    d.execute(
         "INSERT INTO notes (content) VALUES (?)",
         (content,)
     )
 
-    db.commit()
+    d.commit()
 
     return redirect("/notes")
+
+
+# AI assistant
+
+@app.route("/ai")
+def ai():
+
+    return render_template("ai.html")
+
+
+@app.route("/ask_ai", methods=["POST"])
+def ask_ai():
+
+    q = request.get_json()["question"]
+
+    responses = [
+        "Focus on one task at a time.",
+        "Break the task into smaller steps.",
+        "Take a 5 minute break and come back.",
+        "Your productivity is great today.",
+        "Remember why you started."
+    ]
+
+    return jsonify({
+        "answer": random.choice(responses)
+    })
 
 
 if __name__ == "__main__":
