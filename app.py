@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 import sqlite3
 import random
+import datetime
 
 app = Flask(__name__)
 app.secret_key = "lifeos_secret"
@@ -28,7 +29,8 @@ def init_db():
     CREATE TABLE IF NOT EXISTS tasks(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
-        status TEXT
+        status TEXT,
+        date TEXT
     )
     """)
 
@@ -52,10 +54,8 @@ def init_db():
 
 @app.route("/")
 def home():
-
     if "user" in session:
         return redirect("/dashboard")
-
     return redirect("/login")
 
 
@@ -81,9 +81,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-
     session.clear()
-
     return redirect("/login")
 
 
@@ -92,14 +90,16 @@ def dashboard():
 
     tasks = db().execute("SELECT * FROM tasks").fetchall()
 
-    notes = db().execute("SELECT * FROM notes").fetchall()
+    total = len(tasks)
+    done = len([t for t in tasks if t["status"] == "done"])
 
-    productivity = random.randint(60,100)
+    productivity = 0
+    if total > 0:
+        productivity = int((done/total)*100)
 
     return render_template(
         "dashboard.html",
         tasks=tasks,
-        notes=notes,
         productivity=productivity
     )
 
@@ -117,11 +117,13 @@ def add_task():
 
     title = request.form["title"]
 
+    today = str(datetime.date.today())
+
     d = db()
 
     d.execute(
-        "INSERT INTO tasks (title,status) VALUES (?,?)",
-        (title,"todo")
+        "INSERT INTO tasks (title,status,date) VALUES (?,?,?)",
+        (title,"todo",today)
     )
 
     d.commit()
@@ -146,55 +148,12 @@ def update_task():
     return jsonify({"success":True})
 
 
-@app.route("/notes")
-def notes():
+@app.route("/calendar")
+def calendar():
 
-    notes = db().execute("SELECT * FROM notes").fetchall()
+    tasks = db().execute("SELECT * FROM tasks").fetchall()
 
-    return render_template("notes.html",notes=notes)
-
-
-@app.route("/add_note", methods=["POST"])
-def add_note():
-
-    content = request.form["content"]
-
-    d = db()
-
-    d.execute(
-        "INSERT INTO notes (content) VALUES (?)",
-        (content,)
-    )
-
-    d.commit()
-
-    return redirect("/notes")
-
-
-# AI assistant
-
-@app.route("/ai")
-def ai():
-
-    return render_template("ai.html")
-
-
-@app.route("/ask_ai", methods=["POST"])
-def ask_ai():
-
-    q = request.get_json()["question"]
-
-    responses = [
-        "Focus on one task at a time.",
-        "Break the task into smaller steps.",
-        "Take a 5 minute break and come back.",
-        "Your productivity is great today.",
-        "Remember why you started."
-    ]
-
-    return jsonify({
-        "answer": random.choice(responses)
-    })
+    return render_template("calendar.html",tasks=tasks)
 
 
 if __name__ == "__main__":
