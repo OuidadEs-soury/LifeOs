@@ -21,8 +21,6 @@
 
 <a href="/dashboard">Dashboard</a>
 <a href="/tasks">Tasks</a>
-<a href="/calendar">Calendar</a>
-<a href="/notes">Notes</a>
 <a href="/ai">AI Assistant</a>
 <a href="/logout">Logout</a>
 
@@ -36,19 +34,26 @@
 <div class="cards">
 
 <div class="card">
+
 <h3>Total Tasks</h3>
+
 <p>{{ tasks|length }}</p>
+
 </div>
+
 
 <div class="card">
+
 <h3>Productivity</h3>
-<p>{{ productivity }}%</p>
-</div>
+
+<p id="productivity-value">{{ productivity }}%</p>
 
 </div>
 
+</div>
 
-<div class="card" style="margin-top:40px">
+
+<div class="card chart-card" data-productivity="{{ productivity }}">
 
 <h3>Productivity Chart</h3>
 
@@ -56,59 +61,13 @@
 
 </div>
 
-</div>
 
 </div>
 
+</div>
 
-<script>
 
-const productivity = {{ productivity | tojson }};
-
-const ctx = document.getElementById("chart");
-
-new Chart(ctx, {
-
-type: "doughnut",
-
-data: {
-
-labels: ["Completed", "Remaining"],
-
-datasets: [{
-
-data: [productivity, 100 - productivity],
-
-borderWidth: 1
-
-}]
-
-},
-
-options: {
-
-responsive: true,
-
-plugins: {
-
-legend: {
-
-labels: {
-
-color: "white"
-
-}
-
-}
-
-}
-
-}
-
-});
-
-</script>
-
+<script src="/static/js/analytics.js"></script>
 
 </body>
 
